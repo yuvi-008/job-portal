@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux';
-import { setAllJobs } from '../redux/jobSlice';
+import { setAllJobs } from '../redux/jobslice';
 import { JOB_API_END_POINT } from '../utils/constant';
 import axios from 'axios';
 import { useSelector } from 'react-redux';

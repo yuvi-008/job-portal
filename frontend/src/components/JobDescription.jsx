@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { JOB_API_END_POINT, APPLICATION_API_END_POINT } from "@/utils/constant";
-import { setSingleJob } from "@/redux/jobSlice";
+import { setSingleJob } from "@/redux/jobslice";
 import Navbar from "./shared/Navbar";
 import { Loader2, MapPin, Calendar, DollarSign, Users, FileText } from "lucide-react";
 
