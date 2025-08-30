@@ -13,6 +13,8 @@ dotenv.config();
 
 const app = express();
 
+const _dirname = path.resolve();
+
 
 // ✅ Apply CORS BEFORE anything else
 
@@ -30,7 +32,7 @@ app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
 
-const _dirname = path.resolve();
+
 
 // ✅ API routes
 app.use("/api/v1/user", userRoute);
