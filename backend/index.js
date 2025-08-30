@@ -13,7 +13,7 @@ dotenv.config();
 
 const app = express();
 
-const _dirname = path.resolve();
+
 
 
 // ✅ Apply CORS BEFORE anything else
@@ -41,9 +41,7 @@ app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 
 // Frontend will be served separately
-app.get('/', (_, res) => {
-  res.json({ message: 'Job Portal Backend API is running!' });
-});
+
 
 // ✅ Start server
 app.listen(PORT, () => {
