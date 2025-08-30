@@ -13,9 +13,9 @@ const persistor = persistStore(store);
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <App />
-    </PersistGate>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
 
     <Toaster/>     

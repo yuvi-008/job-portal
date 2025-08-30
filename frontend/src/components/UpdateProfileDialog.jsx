@@ -1,150 +1,135 @@
-import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { setUser } from "../redux/authSlice";
 import axios from "axios";
 import { USER_API_END_POINT } from "../utils/constant";
+import { setUser } from "../redux/authSlice";
+import { Loader2 } from "lucide-react";
 
-const UpdateProfileDialog = ({ open, setOpen }) => {
-  const [loading, setLoading] = useState(false);
-  const {user}= useSelector((store) => store.auth);
-  const [input, setInput] = useState({
-    fullname: user?.fullname ,
-    email: user?.email,
-    phoneNumber: user?.phoneNumber,
-    bio: user?.profile?.bio,
-    skills: user?.profile?.skills?.map(skill=>skill),
-    file:user?.profile?.resume,
-  });
+const UpdateProfileDialog = ({ isOpen, onClose }) => {
+  const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    fullname: user?.fullname || "",
+    bio: user?.profile?.bio || "",
+    phoneNumber: user?.profile?.phoneNumber || "",
+    skills: user?.profile?.skills?.join(", ") || "",
+  });
 
-  const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
-  }
-  const changeFileHandler = (e) => {
-    const file = e.target.files?.[0] ;
-    setInput({ ...input, file });
-  }
-  const submitHandler = async (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("fullname", input.fullname);
-    formData.append("email", input.email);
-    formData.append("phoneNumber", input.phoneNumber);
-    formData.append("bio", input.bio);
-    formData.append("skills", input.skills);
-    if (input.file) {
-      formData.append("file", input.file);
-    }
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const response = await axios.post(`${USER_API_END_POINT}/profile/update`, formData, {
-        headers:{
-          "Content-Type": "multipart/form-data",
+      const response = await axios.put(
+        `${USER_API_END_POINT}/updateprofile`,
+        {
+          ...formData,
+          skills: formData.skills.split(",").map((skill) => skill.trim()),
         },
-        withCredentials: true,
-      });
+        { withCredentials: true }
+      );
+
       if (response.data.success) {
         dispatch(setUser(response.data.user));
-        toast.success(response.data.message);
+        toast.success("Profile updated successfully!");
+        onClose();
       }
-
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
-
-    } finally{
+      toast.error(error.response?.data?.message || "Failed to update profile");
+    } finally {
       setLoading(false);
     }
-    setOpen(false);
-    console.log(input);
-
-    console.log(input);
-  }
-
-
+  };
 
   return (
-    <div>
-      <Dialog open={open}>
-        <DialogContent className="sm:max-w-[425px]" onInteractOutside={() => setOpen(false)}>
-          <DialogHeader>
-            <DialogTitle>Update Profile</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={submitHandler}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 item-center gap-4">
-                <Label htmlfor="name" className="text-right ">
-                  Name
-                </Label>
-                <Input id="name" name="name" type="text" value={input.fullname} onChange={changeEventHandler} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 item-center gap-4">
-                <Label htmlfor="email" className="text-right ">
-                  Email
-                </Label>
-                <Input id="email" name="email" type="email" value={input.email} onChange={changeEventHandler} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 item-center gap-4">
-                <Label htmlfor="number" className="text-right ">
-                  Number
-                </Label>
-                <Input id="number" name="number" value={input.phoneNumber} onChange={changeEventHandler} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 item-center gap-4">
-                <Label htmlfor="bio" className="text-right ">
-                  Bio
-                </Label>
-                <Input id="bio" name="bio" value={input.bio} onChange={changeEventHandler} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 item-center gap-4">
-                <Label htmlfor="skills" className="text-right ">
-                  Skills
-                </Label>
-                <Input id="skills" name="skills" type="text" value={input.skills} onChange={changeEventHandler} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 item-center gap-4">
-                <Label htmlfor="file" className="text-right ">
-                  Resume
-                </Label>
-                <Input id="file" name="file"  type="file" onChange={changeFileHandler} accept="application/pdf" className="col-span-3" />
-              </div>
-              
-            </div>
-            <DialogFooter>
-              
-                 {loading ? (
-                  <Button>
-                    {" "}
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait{" "}
-                  </Button>
-                ) : (
-                  <Button type="submit" className="w-full my-4">
-                    Update
-                  </Button>
-                )}
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-gray-700/95 border border-gray-600 shadow-2xl backdrop-blur-sm max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-white">Update Profile</DialogTitle>
+        </DialogHeader>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-white font-medium">Full Name</Label>
+            <Input
+              type="text"
+              name="fullname"
+              value={formData.fullname}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              className="bg-gray-600 border-gray-500 text-white placeholder:text-gray-400 rounded-lg h-11 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
 
-              
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+          <div className="space-y-2">
+            <Label className="text-white font-medium">Bio</Label>
+            <Input
+              type="text"
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              placeholder="Tell us about yourself"
+              className="bg-gray-600 border-gray-500 text-white placeholder:text-gray-400 rounded-lg h-11 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-white font-medium">Phone Number</Label>
+            <Input
+              type="text"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              placeholder="Enter your phone number"
+              className="bg-gray-600 border-gray-500 text-white placeholder:text-gray-400 rounded-lg h-11 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-white font-medium">Skills (comma separated)</Label>
+            <Input
+              type="text"
+              name="skills"
+              value={formData.skills}
+              onChange={handleChange}
+              placeholder="e.g., HTML, CSS, JavaScript, React"
+              className="bg-gray-600 border-gray-500 text-white placeholder:text-gray-400 rounded-lg h-11 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="flex-1 bg-transparent border-2 border-gray-500 text-gray-200 hover:bg-gray-600 hover:border-blue-500 hover:text-blue-400 transition-all duration-200"
+            >
+              Cancel
+            </Button>
+            {loading ? (
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating
+              </Button>
+            ) : (
+              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                Update Profile
+              </Button>
+            )}
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

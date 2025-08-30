@@ -27,7 +27,7 @@ const ApplicantsTable = () => {
     }
 
     return (
-        <div>
+        <div className='bg-white 100% h-screen'>
             <Table>
                 <TableCaption>A list of your recent applied user</TableCaption>
                 <TableHeader>

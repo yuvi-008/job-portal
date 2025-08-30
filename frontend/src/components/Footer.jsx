@@ -1,91 +1,69 @@
 import React from 'react';
 import facebookIcon from '../assets/facebook.png';
-
 import xIcon from '../assets/x.png';
 import linkedinIcon from '../assets/download (6).png';
 
-
-
-const Footer = ({ backgroundColor = '#e67e22' }) => {
-  const styles = {
-    footer: {
-      backgroundColor,
-      color: '#f1f1f1',
-      padding: '40px 20px',
-      fontFamily: 'Segoe UI, sans-serif',
-    },
-    container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      maxWidth: '1200px',
-      margin: '0 auto',
-    },
-    column: {
-      flex: '1 1 300px',
-      margin: '10px',
-    },
-    heading: {
-      fontSize: '18px',
-      fontWeight: 'bold',
-      marginBottom: '10px',
-    },
-    text: {
-      lineHeight: '1.6',
-    },
-    socialIcons: {
-      display: 'flex',
-      gap: '10px',
-      marginTop: '10px',
-    },
-    icon: {
-  width: '30px',
-  height: '30px',
-  cursor: 'pointer',
-   },
-
-    bottom: {
-      textAlign: 'center',
-      marginTop: '30px',
-      borderTop: '1px solid #ccc',
-      paddingTop: '15px',
-      fontSize: '14px',
-      color: '#ddd',
-    },
-  };
-
+const Footer = () => {
   return (
-    <footer style={styles.footer}>
-      <div style={styles.container}>
+    <footer className="bg-gray-900 border-t border-gray-700 mt-20">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-white">JobHub</h3>
+            <p className="text-gray-300 leading-relaxed text-lg">
+              Your one-stop platform to connect talent with opportunity. Built with the MERN stack.
+            </p>
+          </div>
 
-        <div style={styles.column}>
-          <h3 style={styles.heading}>JobHub</h3>
-          <p style={styles.text}>
-            Your one-stop platform to connect talent with opportunity. Built with the MERN stack.
+          <div className="space-y-6">
+            <h4 className="text-xl font-semibold text-white">Contact</h4>
+            <div className="space-y-3 text-gray-300">
+              <p className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                Email: support@jobhunt.com
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                Phone: +1 (555) 123-4567
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h4 className="text-xl font-semibold text-white">Follow Us</h4>
+            <div className="flex gap-4">
+              <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-blue-600 transition-all duration-200 cursor-pointer group">
+                <img 
+                  src={facebookIcon} 
+                  alt="Facebook" 
+                  className="w-6 h-6 group-hover:scale-110 transition-transform" 
+                />
+              </div>
+              <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-blue-600 transition-all duration-200 cursor-pointer group">
+                <img 
+                  src={xIcon} 
+                  alt="X" 
+                  className="w-6 h-6 group-hover:scale-110 transition-transform" 
+                />
+              </div>
+              <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-blue-600 transition-all duration-200 cursor-pointer group">
+                <img 
+                  src={linkedinIcon} 
+                  alt="LinkedIn" 
+                  className="w-6 h-6 group-hover:scale-110 transition-transform" 
+                />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="border-t border-gray-700 mt-12 pt-8 text-center">
+          <p className="text-gray-400 text-sm">
+            &copy; 2025 JobHub. All rights reserved.
           </p>
         </div>
-
-        <div style={styles.column}>
-          <h4 style={styles.heading}>Contact</h4>
-          <p style={styles.text}>Email: support@jobhunt.com</p>
-          <p style={styles.text}>Phone: +1 (555) 123-4567</p>
-        </div>
-
-        <div style={styles.column}>
-          <h4 style={styles.heading}>Follow Us</h4>
-          <div style={styles.socialIcons}>
-           <img src={facebookIcon} alt="Facebook" style={styles.icon} />
-           <img src={xIcon} alt="X" style={styles.icon} />
-           <img src={linkedinIcon} alt="LinkedIn" style={styles.icon} />
- 
-          </div>
-        </div>
-
-      </div>
-
-      <div style={styles.bottom}>
-        <p>&copy; 2025 JobHub. All rights reserved.</p>
       </div>
     </footer>
   );
